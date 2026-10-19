@@ -284,6 +284,48 @@ namespace MesaDePartesHospital
             for (int i = 0; i < total; i++)
                 Console.WriteLine("  " + codigos[i].PadRight(15) + nombres[i].PadRight(28) + telefonos[i].PadRight(12) + seguros[i].PadRight(9) + tramites[i]);
         }
-        
+        //  ORDENAMIENTO 
+        static void Intercambiar(string[] arreglo, int a, int b)
+        {
+            string temp = arreglo[a];
+            arreglo[a] = arreglo[b];
+            arreglo[b] = temp;
+        }
+
+        static void IntercambiarRegistros(int a, int b)
+        {
+            Intercambiar(codigos, a, b);
+            Intercambiar(nombres, a, b);
+            Intercambiar(dnis, a, b);
+            Intercambiar(telefonos, a, b);
+            Intercambiar(seguros, a, b);
+            Intercambiar(tramites, a, b);
+            Intercambiar(fechas, a, b);
+            Intercambiar(estados, a, b);
+        }
+
+        static void OrdenarPorCodigo()
+        {
+            for (int i = 0; i < total - 1; i++)
+                for (int j = 0; j < total - 1 - i; j++)
+                    if (string.CompareOrdinal(codigos[j], codigos[j + 1]) > 0)
+                        IntercambiarRegistros(j, j + 1);
+            Console.WriteLine("\n  Expedientes ordenados por código (burbuja).");
+            ListarExpedientes();
+        }
+
+        static void OrdenarPorNombre()
+        {
+            for (int i = 0; i < total - 1; i++)
+            {
+                int menor = i;
+                for (int j = i + 1; j < total; j++)
+                    if (string.CompareOrdinal(nombres[j], nombres[menor]) < 0) menor = j;
+                if (menor != i) IntercambiarRegistros(i, menor);
+            }
+            Console.WriteLine("\n  Expedientes ordenados por nombre (selección).");
+            ListarExpedientes();
+        }
+
     }
 }
