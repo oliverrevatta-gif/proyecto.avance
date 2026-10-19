@@ -216,6 +216,74 @@ namespace MesaDePartesHospital
             Console.WriteLine("\n  Expediente registrado correctamente.");
             Console.WriteLine("  Código de seguimiento: " + codigos[total - 1]);
         }
+        //  CONSULTA Y BÚSQUEDA 
+        static bool FormatoCodigoValido(string codigo)
+        {
+            if (codigo.Length != 13) return false;
+            string prefijo = codigo.Substring(0, 3);
+            return (prefijo == "ESS" || prefijo == "SIS") && codigo[3] == '-' && codigo[8] == '-';
+        }
 
+        static int BuscarPorCodigo(string codigo)
+        {
+            for (int i = 0; i < total; i++)
+                if (codigos[i] == codigo) return i;
+            return -1;
+        }
+
+        static void MostrarExpediente(int pos)
+        {
+            Console.WriteLine("\n  Código   : " + codigos[pos]);
+            Console.WriteLine("  Paciente : " + nombres[pos] + " (DNI " + dnis[pos] + ")");
+            Console.WriteLine("  Teléfono : " + telefonos[pos]); 
+            Console.WriteLine("  Seguro   : " + seguros[pos]);
+            Console.WriteLine("  Trámite  : " + tramites[pos]);
+            Console.WriteLine("  Fecha    : " + fechas[pos]);
+            Console.WriteLine("  Estado   : " + estados[pos]);
+        }
+
+        static void ConsultarPorCodigo()
+        {
+            Console.WriteLine("\n--- CONSULTAR POR CÓDIGO ---");
+            string codigo = LeerTexto("Código (ej. ESS-2026-0001): ").ToUpper();
+            if (!FormatoCodigoValido(codigo))
+            {
+                Console.WriteLine("  Formato inválido. Use PREFIJO-AÑO-0000 (ESS o SIS).");
+                return;
+            }
+            int pos = BuscarPorCodigo(codigo);
+            if (pos == -1) Console.WriteLine("  No se encontró ningún expediente con ese código.");
+            else MostrarExpediente(pos);
+        }
+
+        static void BuscarPorNombre()
+        {
+            Console.WriteLine("\n--- BUSCAR POR NOMBRE ---");
+            string texto = LeerTexto("Nombre o apellido a buscar: ").ToUpper();
+            int encontrados = 0;
+            for (int i = 0; i < total; i++)
+            {
+                if (nombres[i].IndexOf(texto) >= 0)
+                {
+                    MostrarExpediente(i);
+                    encontrados++;
+                }
+            }
+            Console.WriteLine($"\n  Coincidencias encontradas: {encontrados}");
+        }
+
+        static void ListarExpedientes()
+        {
+            Console.WriteLine("\n--- LISTADO DE EXPEDIENTES ---");
+            if (total == 0)
+            {
+                Console.WriteLine("  No hay expedientes registrados.");
+                return;
+            }
+            Console.WriteLine("  " + "CÓDIGO".PadRight(15) + "PACIENTE".PadRight(28) + "TELÉFONO".PadRight(12) + "SEGURO".PadRight(9) + "TRÁMITE");
+            for (int i = 0; i < total; i++)
+                Console.WriteLine("  " + codigos[i].PadRight(15) + nombres[i].PadRight(28) + telefonos[i].PadRight(12) + seguros[i].PadRight(9) + tramites[i]);
+        }
+        
     }
 }
