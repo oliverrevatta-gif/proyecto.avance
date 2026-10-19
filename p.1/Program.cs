@@ -157,6 +157,65 @@ namespace MesaDePartesHospital
             int op = LeerOpcion(1, listaTramites.Length);
             return listaTramites[op - 1];
         }
+        // REGISTRO DE EXPEDIENTES 
+        static string GenerarCodigo(string seguro)
+        {
+            contador++;
+            string prefijo = seguro == "EsSalud" ? "ESS" : "SIS";
+            return prefijo + "-" + DateTime.Now.Year + "-" + contador.ToString().PadLeft(4, '0');
+        }
+
+        static bool ExisteDuplicado(string dni, string tramite)
+        {
+            for (int i = 0; i < total; i++)
+                if (dnis[i] == dni && tramites[i] == tramite) return true;
+            return false;
+        }
+
+        static void RegistrarExpediente()
+        {
+            Console.WriteLine("\n--- REGISTRAR EXPEDIENTE ---");
+            if (total == MAX)
+            {
+                Console.WriteLine("La mesa de partes alcanzó su capacidad máxima.");
+                return;
+            }
+            string seguro = ElegirSeguro();
+            string nombre = LeerNombre();
+            string dni = LeerDni();
+
+            // Validación: Verificar si el DNI pertenece a otra persona
+            for (int i = 0; i < total; i++)
+            {
+                if (dnis[i] == dni && nombres[i] != nombre)
+                {
+                    Console.WriteLine($"\n  Este DNI ya está ingresado con otra persona ({nombres[i]}).");
+                    return;
+                }
+            }
+
+            string telefono = LeerTelefono(); 
+            string tramite = ElegirTramite();
+
+            if (ExisteDuplicado(dni, tramite))
+            {
+                Console.WriteLine("\n  Ya existe un expediente de este paciente con el mismo trámite.");
+                return;
+            }
+
+            codigos[total] = GenerarCodigo(seguro);
+            nombres[total] = nombre;
+            dnis[total] = dni;
+            telefonos[total] = telefono; 
+            seguros[total] = seguro;
+            tramites[total] = tramite;
+            fechas[total] = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+            estados[total] = "Recibido";
+            total++;
+
+            Console.WriteLine("\n  Expediente registrado correctamente.");
+            Console.WriteLine("  Código de seguimiento: " + codigos[total - 1]);
+        }
 
     }
 }
