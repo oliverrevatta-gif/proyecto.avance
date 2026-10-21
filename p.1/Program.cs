@@ -26,7 +26,8 @@ namespace MesaDePartesHospital
             "Referencia o contrarreferencia",
             "Certificado médico"
         };
-        //  PROGRAMA PRINCIPAL Y MENÚ 
+
+        // PROGRAMA PRINCIPAL Y MENÚ 
         static void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -60,6 +61,7 @@ namespace MesaDePartesHospital
             Console.WriteLine("6. Ordenar por nombre ");
             Console.WriteLine("0. Salir");
         }
+
         // FUNCIONES DE ENTRADA Y VALIDACIÓN 
         static int LeerOpcion(int min, int max)
         {
@@ -92,7 +94,7 @@ namespace MesaDePartesHospital
         static bool SoloLetrasYEspacios(string texto)
         {
             for (int i = 0; i < texto.Length; i++)
-                if (!char.IsLetter(texto[i]) && texto[i] != ' ') return false;
+                if (!char.IsLetter(texto[i]) && texto[i] != ' ' && texto[i] != '-') return false;
             return true;
         }
 
@@ -134,9 +136,9 @@ namespace MesaDePartesHospital
             bool valido;
             do
             {
-                telefono = LeerTexto("Teléfono / Celular: ").Replace(" ", "");
-                valido = telefono.Length >= 7 && telefono.Length <= 9 && SoloDigitos(telefono);
-                if (!valido) Console.WriteLine("  Teléfono inválido: debe contener entre 7 y 9 dígitos numéricos.");
+                telefono = LeerTexto("Teléfono / Celular (9 dígitos): ").Replace(" ", "");
+                valido = telefono.Length == 9 && SoloDigitos(telefono);
+                if (!valido) Console.WriteLine("  Teléfono inválido: debe contener exactamente 9 dígitos numéricos.");
             } while (!valido);
             return telefono;
         }
@@ -157,6 +159,7 @@ namespace MesaDePartesHospital
             int op = LeerOpcion(1, listaTramites.Length);
             return listaTramites[op - 1];
         }
+
         // REGISTRO DE EXPEDIENTES 
         static string GenerarCodigo(string seguro)
         {
@@ -184,7 +187,6 @@ namespace MesaDePartesHospital
             string nombre = LeerNombre();
             string dni = LeerDni();
 
-            // Validación: Verificar si el DNI pertenece a otra persona
             for (int i = 0; i < total; i++)
             {
                 if (dnis[i] == dni && nombres[i] != nombre)
@@ -194,7 +196,7 @@ namespace MesaDePartesHospital
                 }
             }
 
-            string telefono = LeerTelefono(); 
+            string telefono = LeerTelefono();
             string tramite = ElegirTramite();
 
             if (ExisteDuplicado(dni, tramite))
@@ -206,7 +208,7 @@ namespace MesaDePartesHospital
             codigos[total] = GenerarCodigo(seguro);
             nombres[total] = nombre;
             dnis[total] = dni;
-            telefonos[total] = telefono; 
+            telefonos[total] = telefono;
             seguros[total] = seguro;
             tramites[total] = tramite;
             fechas[total] = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
@@ -216,7 +218,8 @@ namespace MesaDePartesHospital
             Console.WriteLine("\n  Expediente registrado correctamente.");
             Console.WriteLine("  Código de seguimiento: " + codigos[total - 1]);
         }
-        //  CONSULTA Y BÚSQUEDA 
+
+        // CONSULTA Y BÚSQUEDA 
         static bool FormatoCodigoValido(string codigo)
         {
             if (codigo.Length != 13) return false;
@@ -235,7 +238,7 @@ namespace MesaDePartesHospital
         {
             Console.WriteLine("\n  Código   : " + codigos[pos]);
             Console.WriteLine("  Paciente : " + nombres[pos] + " (DNI " + dnis[pos] + ")");
-            Console.WriteLine("  Teléfono : " + telefonos[pos]); 
+            Console.WriteLine("  Teléfono : " + telefonos[pos]);
             Console.WriteLine("  Seguro   : " + seguros[pos]);
             Console.WriteLine("  Trámite  : " + tramites[pos]);
             Console.WriteLine("  Fecha    : " + fechas[pos]);
@@ -280,11 +283,13 @@ namespace MesaDePartesHospital
                 Console.WriteLine("  No hay expedientes registrados.");
                 return;
             }
-            Console.WriteLine("  " + "CÓDIGO".PadRight(15) + "PACIENTE".PadRight(28) + "TELÉFONO".PadRight(12) + "SEGURO".PadRight(9) + "TRÁMITE");
+            // Aumentado a PadRight(35) para dar más espacio a nombres largos
+            Console.WriteLine("  " + "CÓDIGO".PadRight(15) + "PACIENTE".PadRight(35) + "TELÉFONO".PadRight(12) + "SEGURO".PadRight(9) + "TRÁMITE");
             for (int i = 0; i < total; i++)
-                Console.WriteLine("  " + codigos[i].PadRight(15) + nombres[i].PadRight(28) + telefonos[i].PadRight(12) + seguros[i].PadRight(9) + tramites[i]);
+                Console.WriteLine("  " + codigos[i].PadRight(15) + nombres[i].PadRight(35) + telefonos[i].PadRight(12) + seguros[i].PadRight(9) + tramites[i]);
         }
-        //  ORDENAMIENTO 
+
+        // ORDENAMIENTO 
         static void Intercambiar(string[] arreglo, int a, int b)
         {
             string temp = arreglo[a];
@@ -326,6 +331,5 @@ namespace MesaDePartesHospital
             Console.WriteLine("\n  Expedientes ordenados por nombre (selección).");
             ListarExpedientes();
         }
-
     }
 }
